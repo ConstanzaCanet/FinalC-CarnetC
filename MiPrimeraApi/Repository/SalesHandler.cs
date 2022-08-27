@@ -147,21 +147,21 @@ namespace MiPrimeraApi.Repository
                     using (SqlCommand sqlCommand = new SqlCommand(querySale, sqlConnection))
                     {
                         //recupero en IdVenta del insert realizado a Ventas que usare en ProductosVendidos
-                        int IdVenta = (int)sqlCommand.ExecuteScalar();
+                        int IdVenta = (int)(long)sqlCommand.ExecuteScalar();
 
                         //cargo ProductosVendidos--> utilizo otra query
                         using (SqlCommand sqlCommand2 = new SqlCommand(queryProductsSale, sqlConnection))
                         {
 
                             sqlCommand2.Parameters.Add("@Stock", System.Data.SqlDbType.BigInt);
-                            sqlCommand2.Parameters.Add("@IdProducto", System.Data.SqlDbType.BigInt);
+                            sqlCommand2.Parameters.Add("@Id", System.Data.SqlDbType.BigInt);
                             sqlCommand2.Parameters.Add("@IdVenta", System.Data.SqlDbType.BigInt);
                             
                             foreach (Product p in newSale)
                             {
                                 sqlCommand2.Parameters[0].Value = p.Stock;
-                                sqlCommand2.Parameters[0].Value = p.Id;
-                                sqlCommand2.Parameters[0].Value = IdVenta;
+                                sqlCommand2.Parameters[1].Value = p.Id;
+                                sqlCommand2.Parameters[2].Value = IdVenta;
 
                                 //ejecuto query de forma individual
                                 sqlCommand2.ExecuteNonQuery();
