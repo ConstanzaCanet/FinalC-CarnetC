@@ -7,24 +7,34 @@ namespace MiPrimeraApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+
     public class UserController : ControllerBase
     {
-      /*  [HttpGet(Name = "GetAllUsers")]
+        /*  [HttpGet(Name = "GetAllUsers")]
 
-        public List<User> GetUsers()
+          public List<User> GetUsers()
+          {
+              return UserHandler.GetUsers();
+          }
+          [HttpGet("/api/[controller]/[action]")]
+          public List<User> GetUser(int id)
+          {
+              return UserHandler.GetUser(id);
+          }
+          */
+        [HttpGet("/api/[controller]/[action]")]
+        public List<User> GetUserForName(string userName)
         {
-            return UserHandler.GetUsers();
+            return UserHandler.GetUserForUserName(userName);
         }
-      */
 
-        [HttpGet(Name = "GetUser")]
 
-        public List<User> GetUser([FromBody] int id)
+        [HttpPost("/api/[controller]/[action]")]
+        public List<User> LogIn(string userName, string password)
         {
-            return UserHandler.GetUser(id);
+            return UserHandler.LogIn(userName, password);
+
         }
-
-
 
         [HttpPost]
         public bool CreateNewUser([FromBody] PostUser user)
@@ -44,10 +54,14 @@ namespace MiPrimeraApi.Controllers
         [HttpPut]
         public bool ModifideUser([FromBody] PutUser user)
         {
-            return UserHandler.ChangeNameUser(new User
+            return UserHandler.ChangeUser(new User
             {
                 Id = user.Id,
+                Lastname = user.LastName,
+                Password = user.Password,
+                Email = user.Email,
                 Name = user.Name,
+                UserName = user.UserName,
             });
         }
 
@@ -58,5 +72,8 @@ namespace MiPrimeraApi.Controllers
         {
             return UserHandler.DeleteUser(id); 
         }
+
+
+
     }
 }

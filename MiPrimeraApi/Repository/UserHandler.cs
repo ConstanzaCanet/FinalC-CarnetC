@@ -62,6 +62,63 @@ namespace MiPrimeraApi2.Repository
                     using (SqlCommand sqlCommand = new SqlCommand(
                        "SELECT * FROM Usuario WHERE Id =  @Id;", sqlConnection))
                     {
+                        sqlCommand.Parameters.Add(sqlParameterUserName);
+                        sqlConnection.Open();
+
+                        using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
+                        {
+
+                            if (dataReader.HasRows)
+                            {
+                                while (dataReader.Read())
+                                {
+                                    User user = new User();
+                                    user.Id = Convert.ToInt32(dataReader["Id"]);
+                                    user.UserName = dataReader["NombreUsuario"].ToString();
+                                    user.Name = dataReader["Nombre"].ToString();
+                                    user.Lastname = dataReader["Apellido"].ToString();
+                                    user.Email = dataReader["Mail"].ToString();
+
+                                    users.Add(user);
+                                }
+                            }
+                        }
+                        sqlConnection.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return users;
+
+        }
+
+
+
+
+
+
+
+        //Buscar por userName
+
+        public static List<User> GetUserForUserName(string userName)
+        {
+            List<User> users = new List<User>();
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+                {
+
+                    SqlParameter sqlParameterUserName = new SqlParameter("userName", SqlDbType.VarChar);
+                    sqlParameterUserName.Value = userName;
+
+                    using (SqlCommand sqlCommand = new SqlCommand("SELECT * FROM Usuario WHERE NombreUsuario =  @userName;", sqlConnection))
+                    {
+                        sqlCommand.Parameters.Add(sqlParameterUserName);
+
                         sqlConnection.Open();
 
                         using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
@@ -79,11 +136,13 @@ namespace MiPrimeraApi2.Repository
                                     user.Email = dataReader["Mail"].ToString();
 
 
+                                    users.Add(user);
                                 }
                             }
                         }
                         sqlConnection.Close();
                     }
+                    return users;
                 }
             }
             catch (Exception ex)
@@ -94,6 +153,11 @@ namespace MiPrimeraApi2.Repository
             return users;
 
         }
+
+
+
+
+
 
 
         public static bool CreateNewUser(User user)
@@ -146,7 +210,7 @@ namespace MiPrimeraApi2.Repository
         }
 
 
-        public static bool ChangeNameUser(User user)
+        public static bool ChangeUser(User user)
         {
             bool result = false;
             try
@@ -154,10 +218,13 @@ namespace MiPrimeraApi2.Repository
                 using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
                 {
 
-                    string queryPut = "UPDATE [SistemaGestion].[dbo].[Usuario] SET Nombre = @nombre WHERE Id = @id;";
+                    string queryPut = "UPDATE [SistemaGestion].[dbo].[Usuario] SET Nombre = @nombre, Apellido = @Apellido,NombreUsuario = @NombreUsuario, Contraseña = @Contraseña, Mail = @Mail WHERE Id = @id;";
 
 
-                    SqlParameter nombreParameter = new SqlParameter("Nombre", SqlDbType.VarChar) { Value = user.Name };
+                    SqlParameter NombreParameter = new SqlParameter("Nombre", SqlDbType.VarChar) { Value = user.Name };
+                    SqlParameter ApellidoParameter = new SqlParameter("Apellido", SqlDbType.VarChar) { Value = user.Lastname };
+                    SqlParameter PasswordParameter = new SqlParameter("Contraseña", SqlDbType.VarChar) { Value = user.Password };
+                    SqlParameter MailParameter = new SqlParameter("Mail", SqlDbType.VarChar) { Value = user.Email };
                     SqlParameter idParameter = new SqlParameter("id", SqlDbType.BigInt) { Value = user.Id };
          
 
@@ -165,7 +232,10 @@ namespace MiPrimeraApi2.Repository
 
                     using (SqlCommand sqlCommand = new SqlCommand(queryPut, sqlConnection))
                     {
-                        sqlCommand.Parameters.Add(nombreParameter);
+                        sqlCommand.Parameters.Add(NombreParameter);
+                        sqlCommand.Parameters.Add(ApellidoParameter);
+                        sqlCommand.Parameters.Add(PasswordParameter);
+                        sqlCommand.Parameters.Add(MailParameter);
                         sqlCommand.Parameters.Add(idParameter);
 
 
@@ -196,24 +266,6 @@ namespace MiPrimeraApi2.Repository
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         public static bool DeleteUser(int id)
         {
             bool result = false;
@@ -231,6 +283,7 @@ namespace MiPrimeraApi2.Repository
                     {
 
                         sqlCommand.Parameters.Add(sqlParameter);
+
                         int numberOfRows = sqlCommand.ExecuteNonQuery();
                         if(numberOfRows > 0)
                         {
@@ -249,6 +302,62 @@ namespace MiPrimeraApi2.Repository
             }
 
             return result;
+
+        }
+
+
+
+        public static List<User> LogIn(string userName, string password)
+        {
+            List<User> userLogIn = new List<User>();
+            try
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+                {
+                    // string querySerch = "SELECT FROM Usuario WHERE NombreUsuario=@userName and Contraseña=@password;";
+
+                    SqlParameter sqlParameterUserName = new SqlParameter("userName", SqlDbType.VarChar);
+                    sqlParameterUserName.Value = userName;
+
+                    SqlParameter sqlParameterPassword = new SqlParameter("password", SqlDbType.VarChar);
+                    sqlParameterPassword.Value = password;
+
+                    using (SqlCommand sqlCommand = new SqlCommand(
+                       "SELECT * FROM Usuario WHERE NombreUsuario=@userName and Contraseña=@password;", sqlConnection))
+                    {
+                        sqlCommand.Parameters.Add(sqlParameterUserName);
+                        sqlCommand.Parameters.Add(sqlParameterPassword);
+
+                        sqlConnection.Open();
+
+                        using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
+                        {
+                            if (dataReader.HasRows)
+                            {
+                                while (dataReader.Read())
+                                {
+                                    User user = new User();
+                                    user.Id = Convert.ToInt32(dataReader["Id"]);
+                                    user.UserName = dataReader["NombreUsuario"].ToString();
+                                    user.Name = dataReader["Nombre"].ToString();
+                                    user.Lastname = dataReader["Apellido"].ToString();
+                                    user.Email = dataReader["Mail"].ToString();
+
+                                    userLogIn.Add(user);
+
+                                }
+                            }
+                        }
+
+                        sqlConnection.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex);
+            }
+            return userLogIn;
 
         }
 
