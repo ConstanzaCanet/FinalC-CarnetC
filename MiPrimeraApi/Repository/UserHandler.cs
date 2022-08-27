@@ -274,7 +274,7 @@ namespace MiPrimeraApi2.Repository
 
                 using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
                 {
-                    string queryDelete = "DELETE * FROM Usuario WHERE Id = @id";
+                    string queryDelete = "DELETE FROM Usuario WHERE Id = @id";
                     SqlParameter sqlParameter = new SqlParameter("id",System.Data.SqlDbType.BigInt);
                 
                     sqlConnection.Open();

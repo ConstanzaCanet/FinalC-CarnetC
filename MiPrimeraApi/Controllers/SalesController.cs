@@ -25,5 +25,12 @@ namespace MiPrimeraApi.Controllers
                 coments = comentNew.coments
             });
         }
+        
+
+        [HttpPost("NewSale")]
+        public bool NewSale([FromBody] List<Product> newSale)
+        {
+            return SalesHandler.NewSale(newSale);
+        }
     }
 }
