@@ -32,5 +32,12 @@ namespace MiPrimeraApi.Controllers
         {
             return SalesHandler.NewSale(newSale);
         }
+
+        [HttpDelete("DeleteSale")]
+        public bool DeleteSale(int idVenta)
+        {
+            return SalesHandler.DeleteSale(idVenta);
+        }
+
     }
 }
