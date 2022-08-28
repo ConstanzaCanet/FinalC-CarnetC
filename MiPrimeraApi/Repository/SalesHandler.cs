@@ -182,5 +182,50 @@ namespace MiPrimeraApi.Repository
             return result;
 
         }
+
+        //Aqui se deberia eliminar la venta y ademas los productos vendidos dentro de la venta
+        public static bool DeleteSale(int idVenta)
+        {
+            bool result = false;
+            try
+            {
+
+                using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+                {
+                    //borro la venta y borro los productos incluidos en esa venta
+                    string queryDeleteSale = "DELETE FROM Venta WHERE Id = @idVenta; DELETE FROM ProductoVendido WHERE IdVenta =@idVenta";
+
+                    SqlParameter sqlParameter = new SqlParameter("idVenta", System.Data.SqlDbType.BigInt) { Value = idVenta };
+
+                    sqlConnection.Open();
+
+                    using (SqlCommand sqlCommand = new SqlCommand(queryDeleteSale, sqlConnection))
+                    {
+                        sqlCommand.Parameters.Add(sqlParameter);
+
+                        int numberOfRows = sqlCommand.ExecuteNonQuery();
+                        if (numberOfRows > 0)
+                        {
+                            result = true;
+                        }
+
+                    }
+
+                    sqlConnection.Close();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return result;
+        }
+
+
+
+
+
     }
 }
