@@ -10,18 +10,14 @@ namespace MiPrimeraApi.Controllers
 
     public class UserController : ControllerBase
     {
-        /*  [HttpGet(Name = "GetAllUsers")]
+        [HttpGet("/api/[controller]/[action]")]
 
-          public List<User> GetUsers()
-          {
-              return UserHandler.GetUsers();
-          }
-          [HttpGet("/api/[controller]/[action]")]
-          public List<User> GetUser(int id)
-          {
-              return UserHandler.GetUser(id);
-          }
-          */
+        public List<User> GetAllUsers()
+        {
+            return UserHandler.GetUsers();
+        }
+
+
         [HttpGet("/api/[controller]/[action]")]
         public List<User> GetUserForName(string userName)
         {
