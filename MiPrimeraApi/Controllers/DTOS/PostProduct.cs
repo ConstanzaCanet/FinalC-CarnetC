@@ -2,7 +2,6 @@
 {
     public class PostProduct
     {
-        public string Id { get; set; }
         public string Description { get; set; }
         public int Cost { get; set; }
         public int SalesPrice { get; set; }

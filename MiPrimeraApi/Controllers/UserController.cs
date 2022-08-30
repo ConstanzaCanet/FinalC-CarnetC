@@ -36,7 +36,7 @@ namespace MiPrimeraApi.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPost("/api/[controller]/[action]")]
         public bool CreateNewUser([FromBody] PostUser user)
         {
             return UserHandler.CreateNewUser(new User

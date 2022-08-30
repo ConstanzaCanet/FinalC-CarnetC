@@ -1,13 +1,14 @@
-﻿namespace MiPrimeraApi.Models
+﻿using System;
+namespace MiPrimeraApi.Models
 {
-    public class soldProduct
+    public class SoldProduct
     {
         public int Id { get; set; }
         public int IdProduct { get; set; }
         public int Stock { get; set; }
         public int IdSale { get; set; }
 
-        public soldProduct()
+        public SoldProduct()
         {
             Id = 0;
             IdProduct = 0;
@@ -15,7 +16,7 @@
             IdSale = 0;
         }
 
-        public soldProduct(int id, int idProduct, int stock, int idSale)
+        public SoldProduct(int id, int idProduct, int stock, int idSale)
         {
             this.Id = id;
             this.IdProduct = idProduct;

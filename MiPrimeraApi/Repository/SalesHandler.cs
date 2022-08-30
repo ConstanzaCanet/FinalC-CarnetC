@@ -46,7 +46,7 @@ namespace MiPrimeraApi.Repository
 
 
 
-        //Traigo productos vendidos, correspondientes al user logueado
+        //Traigo ventas, correspondientes al user logueado
         public static List<Sale> GetProductosVendidos(int idUser)
         {
             List<Sale> ventas = new List<Sale>();
@@ -138,7 +138,7 @@ namespace MiPrimeraApi.Repository
                 using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
                 {
 
-                    string querySale = "INSERT INTO Venta (Comentarios) output INSERTED.ID VALUES ('');";
+                    string querySale = "INSERT INTO Venta (Comentarios) OUTPOUT INSERTED.ID VALUES ('');";
                     string queryProductsSale = "INSERT INTO [SistemaGestion].[dbo].[ProductoVendido] (Stock, IdProducto, IdVenta) VALUES(@Stock, @Id, @IdVenta);";
 
 
@@ -193,22 +193,29 @@ namespace MiPrimeraApi.Repository
                 using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
                 {
                     //borro la venta y borro los productos incluidos en esa venta
-                    string queryDeleteSale = "DELETE FROM Venta WHERE Id = @idVenta; DELETE FROM ProductoVendido WHERE IdVenta =@idVenta";
-
+                    string queryDeleteSale = "DELETE FROM Venta WHERE Id = @idVenta;";
+                    string queryDeleteProductSold = "DELETE FROM ProductoVendido WHERE IdVenta =@idVenta";
                     SqlParameter sqlParameter = new SqlParameter("idVenta", System.Data.SqlDbType.BigInt) { Value = idVenta };
 
                     sqlConnection.Open();
 
                     using (SqlCommand sqlCommand = new SqlCommand(queryDeleteSale, sqlConnection))
                     {
+                        //borro la venta
                         sqlCommand.Parameters.Add(sqlParameter);
+                        sqlCommand.ExecuteNonQuery();
 
-                        int numberOfRows = sqlCommand.ExecuteNonQuery();
+                        using (SqlCommand sqlCommand1 = new SqlCommand(queryDeleteProductSold, sqlConnection))
+                        {
+                            //borro los produxtos
+                            int numberOfRows = sqlCommand1.ExecuteNonQuery();
+
                         if (numberOfRows > 0)
                         {
                             result = true;
                         }
 
+                        };
                     }
 
                     sqlConnection.Close();

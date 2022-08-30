@@ -9,8 +9,8 @@ namespace MiPrimeraApi.Controllers
     [Route("[controller]")]
     public class SalesController
     {
-        [HttpGet("GetAllSales")]
-        public List<Sale> GetAllSales(int idUser)
+        [HttpGet("/api/[controller]/[action]")]
+        public List<Sale> GetAllSalesByUser(int idUser)
         {
             return SalesHandler.GetProductosVendidos(idUser);
         }
